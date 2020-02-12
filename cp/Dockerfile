@@ -13,4 +13,4 @@ ADD . ./
 # Run flask in dev mode
 RUN export FLASK_APP=app.py
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["flask", "run", "--host=0.0.0.0", "--no-reload"]

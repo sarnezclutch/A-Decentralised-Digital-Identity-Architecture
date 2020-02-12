@@ -1,16 +1,14 @@
 # init.py
-
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.pool import StaticPool
+from flask_sqlalchemy import SQLAlchemy
 
-# init SQLAlchemy so we can use it later in our models
-
-db = SQLAlchemy()
 jwt = JWTManager()
 host = "0.0.0.0"
+db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__, template_folder='templates')
@@ -62,4 +60,5 @@ def create_app():
     app.register_blueprint(main_blueprint)
 
     db.create_all(app=app)
+
     return app

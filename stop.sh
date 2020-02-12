@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
 # Stop flask containers
-docker-compose -f "docker-compose.yml" down
+docker-compose -f "docker-compose.yml" down -v
 
 cd "$DIR/ledger"
 export FABRIC_VERSION=hlfv12
