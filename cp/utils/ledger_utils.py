@@ -3,11 +3,11 @@ import dotenv
 import requests
 from cp.models.PolicyModel import PolicyModel
 from crypto_utils.conversions import SigConversion
+from cp import db
 
 dotenv.load_dotenv('../.env')
 
 
-# TODO delete pool after
 def publish_pool(policy: int, timestamp: int) -> bool:
     """
 
@@ -39,6 +39,8 @@ def publish_pool(policy: int, timestamp: int) -> bool:
         res = requests.post("http://cp_rest_api:3000/api/ProofBlock", json=data)
         if res.status_code == 200:
             return True
+            db.session.delete(pool)
+            db.session.commit()
         else:
             return False
     else:

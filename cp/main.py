@@ -1,12 +1,13 @@
 import os
 import time
+import dateutil
 from flask import Blueprint, render_template, redirect, url_for, request, flash, json, jsonify
 from flask_jwt_extended import jwt_required
 from cp.models.PolicyModel import PolicyModel
 from cp.models.PolicyPoolModel import PolicyPoolModel
 from cp.utils.sig_utils import setup_key_handler, gen_proofs_handler
 from cp.utils.ledger_utils import publish_pool
-from cp import create_app, db
+from cp import create_app
 
 main = Blueprint('main', __name__, template_folder='templates')
 
@@ -67,6 +68,20 @@ def publish():
     return render_template('publish.html')
 
 
+@main.route('/publish_policies', methods=['POST'])
+def publish_policies():  # Test method to publish a pool manually
+    policy = int(request.form.get('policy'))
+    timestamp = int(dateutil.parser.parse(request.form.get('timestamp')).timestamp())
+
+    if publish_pool(policy, timestamp):
+        flash("Proofs published", 'pub_policies_success')
+        return redirect(url_for('main.publish_policies'))
+    else:
+        flash("Proofs not published. Possibly because the policy does not exist, incorrect timestamp, or API error",
+              'pub_policies_fail')
+        return redirect(url_for('main.publish_policies'))
+
+
 @main.route('/generate_proofs', methods=['POST'])
 @jwt_required
 def generate_proofs():
@@ -101,7 +116,5 @@ def publish_policy_pools():
         policy_pools = PolicyPoolModel.query.filter_by(timestamp=timestamp).all()
 
         for policy_pool in policy_pools:
-            # Publish pool to ledger then delete it
+            # Publish pool to ledger
             publish_pool(policy_pool.policy, timestamp)
-            db.session.delete(policy_pool)
-            db.session.commit()
