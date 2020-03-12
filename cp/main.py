@@ -1,6 +1,6 @@
 import os
 import time
-import dateutil
+import dateutil.parser
 from flask import Blueprint, render_template, redirect, url_for, request, flash, json, jsonify
 from flask_jwt_extended import jwt_required
 from cp.models.PolicyModel import PolicyModel
