@@ -1,0 +1,96 @@
+Number of Keys: 2
+generate_keys time:0.03484561800000008
+
+generate_keys time:0.04669840499999989
+
+generate_keys time:0.02931127599999983
+
+generate_keys time:0.03971537599999997
+
+generate_keys time:0.029664211999999912
+
+
+Number of Keys: 4
+generate_keys time:0.061963694999999985
+
+generate_keys time:0.06831783199999997
+
+generate_keys time:0.06513228400000015
+
+generate_keys time:0.06286267400000001
+
+generate_keys time:0.05905725499999992
+
+
+Number of Keys: 8
+generate_keys time:0.12037397700000008
+
+generate_keys time:0.1164529390000002
+
+generate_keys time:0.11580819899999995
+
+generate_keys time:0.12013532999999987
+
+generate_keys time:0.12351484700000004
+
+
+Number of Keys: 16
+generate_keys time:0.24603207800000026
+
+generate_keys time:0.24003110000000039
+
+generate_keys time:0.2324514259999999
+
+generate_keys time:0.24321496200000015
+
+generate_keys time:0.25460130999999997
+
+
+Number of Keys: 32
+generate_keys time:0.5627534689999996
+
+generate_keys time:0.492897739
+
+generate_keys time:0.4789025709999999
+
+generate_keys time:0.5247760120000002
+
+generate_keys time:0.4833078980000005
+
+
+Number of Keys: 64
+generate_keys time:1.0385308749999993
+
+generate_keys time:1.0480971189999995
+
+generate_keys time:1.0521368019999997
+
+generate_keys time:1.0628570600000007
+
+generate_keys time:1.1219616319999997
+
+
+Number of Keys: 128
+generate_keys time:2.3327519480000003
+
+generate_keys time:2.391504963000001
+
+generate_keys time:2.5314164129999988
+
+generate_keys time:2.5451768939999972
+
+generate_keys time:2.528549751
+
+
+Number of Keys: 256
+generate_keys time:5.648326695999998
+
+generate_keys time:5.650967660999999
+
+generate_keys time:6.283392086999996
+
+generate_keys time:6.673843054000002
+
+generate_keys time:7.707647138999995
+
+

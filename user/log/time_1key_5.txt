@@ -1,0 +1,7 @@
+generate_keys time:0.022025724999999996
+
+request_certs time:0.0026906330000000533
+validate_block time:0.00028119199999987465
+prove owner time:0.010301762999999964
+generate signature time:0.017729208999999857
+access_to_service_time:0.0032764089999999246

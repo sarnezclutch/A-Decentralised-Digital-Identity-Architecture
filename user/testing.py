@@ -31,9 +31,9 @@ def login():
     }
     res = requests.post("http://%s:5000/login" % user_host, data=data)
 
-def generate_keys():
+def generate_keys(num):
     data = {
-        'number': 1,
+        'number': num,
         'time': '16/03/2020 12:00',
         'policy': 1
     }
@@ -55,10 +55,32 @@ def verify(time):
     }
     res = requests.post("http://%s:5000/access_service" % user_host, data=data)
 
-if __name__ == "__main__":
+def generate1key():
     setup_policies()
     login()
-    generate_keys()
+    generate_keys(1)
     while(publish_policies('16/03/2020 12:00') >= 500):
         pass
     verify('16/03/2020 12:00')
+
+def testxkeys(num):
+    f = open("./log/time.txt", "a")
+    f.write("Number of Keys: " + str(num) + "\n")
+    f.close()
+    for i in range(0,5):
+        generate_keys(num)
+    f = open("./log/time.txt", "a")
+    f.write("\n")
+    f.close()
+
+def testKeyGeneration():
+    for i in range(7,8):
+        n = pow(2, i)
+        testxkeys(n)
+
+
+if __name__ == "__main__":
+    setup_policies()
+    login()
+    testKeyGeneration()
+    
