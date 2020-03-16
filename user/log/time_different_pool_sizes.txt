@@ -1,0 +1,77 @@
+Size of Pool: 1
+generate_keys time:0.03489855900000016
+
+generate_keys time:0.018854984999999935
+
+request_certs time:0.01477342600000009
+validate_block time:0.00019337699999999458
+prove owner time:0.01176400000000033
+
+Size of Pool: 2
+generate_keys time:0.02136893899999981
+
+generate_keys time:0.029535847000000004
+
+generate_keys time:0.019540066999999883
+
+generate_keys time:0.018320082000000237
+
+request_certs time:0.00337765000000001
+validate_block time:0.00029139899999997
+
+Size of Pool: 3
+generate_keys time:0.01808384399999996
+
+generate_keys time:0.03166049599999976
+
+generate_keys time:0.02050561499999981
+
+generate_keys time:0.019228896999999634
+
+generate_keys time:0.01865491199999969
+
+generate_keys time:0.027688288999999866
+
+generate_keys time:0.019382706000000027
+
+generate_keys time:0.01827478799999982
+
+request_certs time:0.0029740849999999597
+validate_block time:0.00017139999999971067
+
+Size of Pool: 4
+generate_keys time:0.019877810000000107
+
+generate_keys time:0.03140237800000012
+
+generate_keys time:0.2749192330000003
+
+generate_keys time:0.03172670100000019
+
+generate_keys time:0.02251464900000011
+
+generate_keys time:0.024576198000000105
+
+generate_keys time:0.03416645900000015
+
+generate_keys time:0.02848779999999973
+
+generate_keys time:0.02248747600000023
+
+generate_keys time:0.023659490000000005
+
+generate_keys time:0.042584999000000234
+
+generate_keys time:0.01904202899999996
+
+generate_keys time:0.022868502000000124
+
+generate_keys time:0.031032095999999676
+
+generate_keys time:0.021015607999999908
+
+generate_keys time:0.021964329999999865
+
+request_certs time:0.014209474000000277
+validate_block time:0.000399155999999401
+

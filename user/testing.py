@@ -2,6 +2,7 @@ import requests
 from user import cp_host, service_host, ap_host
 
 from time import process_time 
+import time
 
 user_host = "user"
 
@@ -74,13 +75,32 @@ def testxkeys(num):
     f.close()
 
 def testKeyGeneration():
-    for i in range(7,8):
+    for i in range(1,5):
         n = pow(2, i)
         testxkeys(n)
 
+def publishPoolOfSize(num):
+    for i in range(0, num):
+        generate_keys(1)
+    time.sleep(10)
+    while(publish_policies('16/03/2020 12:00') >= 500):
+        pass
+
+def testPolicyPools():
+    for i in range(6,9):
+        n = pow(2, i)
+        f = open("./log/time.txt", "a")
+        f.write("Size of Pool: " + str(n) + "\n")
+        f.close()
+        publishPoolOfSize(n)
+        time.sleep(30)
+        verify('16/03/2020 12:00')
+        f = open("./log/time.txt", "a")
+        f.write("\n")
+        f.close()
 
 if __name__ == "__main__":
     setup_policies()
     login()
-    testKeyGeneration()
+    testPolicyPools()
     
