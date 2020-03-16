@@ -1,3 +1,5 @@
 .idea/
 .pytest_cache/
 .hypothesis/
+*.card
+DevServer_connection.json
