@@ -83,7 +83,7 @@ def publish_policies():  # Test method to publish a pool manually
         publish_end = process_time()
 
         f = open("./log/time.txt", "a")
-        f.write("publish  time:" + str(publish_end - publish_start) + "\n")
+        f.write("publish time:" + str(publish_end - publish_start) + "\n")
         f.close()
 
         flash("Proofs published", 'pub_policies_success')

@@ -93,15 +93,17 @@ def challenge_response_post(headers):
     to the following endpoint in order to receive (rnd, a, b1, b2) and the CP public key for the corresponding policy
     and time interval.
     """
-    setup_keys_start = process_time()
+    generate_keys_start = process_time()
+
+    # setup_keys_start = process_time()
 
     res = requests.get("http://%s:5000/setup_keys" % cp_host, params=params, headers=headers)
 
-    setup_keys_end = process_time()
+    # setup_keys_end = process_time()
 
-    f = open("./log/time.txt", "a")
-    f.write("setup_keys time:" + str(setup_keys_end - setup_keys_start)+ "\n")
-    f.close()
+    # f = open("./log/time.txt", "a")
+    # f.write("setup_keys time:" + str(setup_keys_end - setup_keys_start)+ "\n")
+    # f.close()
 
 
     if res.status_code == 401:
@@ -110,29 +112,29 @@ def challenge_response_post(headers):
     try:
         # Generates the challenge response
 
-        challenge_response_start = process_time()
+        # challenge_response_start = process_time()
 
         es = handle_challenge(res.json(), params.get('policy'))
 
-        challenge_response_end = process_time()
+        # challenge_response_end = process_time()
 
-        f = open("./log/time.txt", "a")
-        f.write("challenge_response time:" + str(challenge_response_end - challenge_response_start) + "\n")
+        # f = open("./log/time.txt", "a")
+        # f.write("challenge_response time:" + str(challenge_response_end - challenge_response_start) + "\n")
 
-        f.close()
+        # f.close()
 
         # Post keys to CP
         try:
 
-            post_to_cp_start = process_time()
+            # post_to_cp_start = process_time()
 
 
             res = requests.post("http://%s:5000/generate_proofs" % cp_host, json=json.dumps(es), headers=headers)
 
-            post_to_cp_end = process_time()
-            f = open("./log/time.txt", "a")
-            f.write("post_to_cp time:" + str(post_to_cp_end - post_to_cp_start) + "\n")
-            f.close()
+            # post_to_cp_end = process_time()
+            # f = open("./log/time.txt", "a")
+            # f.write("post_to_cp time:" + str(post_to_cp_end - post_to_cp_start) + "\n")
+            # f.close()
 
 
 
@@ -140,15 +142,17 @@ def challenge_response_post(headers):
                 # TODO remove hardcoded CP
                 data = res.json()
                 # The response hashes need to be saved with the corresponding policy at a given timestamp
-                save_hash_start = process_time()
+                # save_hash_start = process_time()
 
                 handle_response_hashes(data, 2000, data.get('policy'))
 
-                save_hash_end = process_time()
+                # save_hash_end = process_time()
+
+                generate_keys_end = process_time()
 
 
                 f = open("./log/time.txt", "a")
-                f.write("save_hash  time:" + str(save_hash_end - save_hash_start) + "\n")
+                f.write("generate_keys time:" + str(generate_keys_end- generate_keys_start) + "\n\n")
                 f.close()
 
                 flash("Keys have been generated", 'keygen_success')
@@ -200,17 +204,11 @@ def access_service_post():
     if res.status_code == 500:
         flash(res.json().get('message'), "access_service_error")
         return render_template('service_authenticate.html')
-    
 
-
-    # Get data from response and find corresponding keymodel
+    # Get data from response
     data = res.json()
-    key_model = KeyModel.query.filter_by(provider_type_=1, p_id_=params.get('cp'), policy_=params.get('policy'),
-                                         interval_timestamp_=params.get('timestamp')).first()
 
     # Validate that block has not been altered
-
-
     try:
 
         validate_block_start = process_time()
@@ -227,20 +225,28 @@ def access_service_post():
         flash(str(e), "access_service_error")
         return render_template('service_authenticate.html')
 
+    #Find corresponding keymodel
+
+    key_model = KeyModel.query.filter_by(provider_type_=1, p_id_=params.get('cp'), policy_=params.get('policy'),
+                                         interval_timestamp_=params.get('timestamp')).first()
+
     pubk = {
         'pubk': Conversion.OS2IP(key_model.public_key)
     }
 
+    
     # Get the challenge from the AP in order to prove that the user owns a specific keypair
-    request_challenge_own_keypair_start = process_time()
+    
+    prove_owner_start = process_time()
+    # request_challenge_own_keypair_start = process_time()
 
     res = requests.get('http://%s:5000/prove_owner' % ap_host, params=pubk)
 
-    request_challenge_own_keypair_end = process_time()
+    # request_challenge_own_keypair_end = process_time()
 
-    f = open("./log/time.txt", "a")
-    f.write("request_challenge_own_keypair time:" + str(request_challenge_own_keypair_end - request_challenge_own_keypair_start) + "\n")
-    f.close()
+    # f = open("./log/time.txt", "a")
+    # f.write("request_challenge_own_keypair time:" + str(request_challenge_own_keypair_end - request_challenge_own_keypair_start) + "\n")
+    # f.close()
     
     y = res.json().get('y')
 
@@ -258,17 +264,23 @@ def access_service_post():
 
         # Post the proofs
 
-        post_proofs_start = process_time()
-
+        # post_proofs_start = process_time()
 
         res = requests.post('http://%s:5000/prove_owner' % ap_host, json=proof_resp, params=params)
 
+        # post_proofs_end = process_time()
 
-        post_proofs_end = process_time()
+        # f = open("./log/time.txt", "a")
+        # f.write("get_challenge_own_keypair time:" + str(post_proofs_end - post_proofs_start) + "\n")
+        # f.close()
+
+        prove_owner_end = process_time()
 
         f = open("./log/time.txt", "a")
-        f.write("get_challenge_own_keypair time:" + str(post_proofs_end - post_proofs_start) + "\n")
+        f.write("prove owner time:" + str(prove_owner_end - prove_owner_start) + "\n")
         f.close()
+
+        generate_signature_start = process_time()
 
         # Receive access token for AP
         access_info = res.json()
@@ -277,58 +289,57 @@ def access_service_post():
         }
 
         # Request challenge from AP to issue blind signature
-        request_challenge_issue_blind_signiture_start = process_time()
+
+        # request_challenge_issue_blind_signiture_start = process_time()
 
         challenge = requests.get('http://%s:5000/init_sig' % ap_host, headers=headers).json()
 
-        request_challenge_issue_blind_signiture_end = process_time()
+        # request_challenge_issue_blind_signiture_end = process_time()
 
-        f = open("./log/time.txt", "a")
-        f.write("request_challenge_issue_blind_signiture_ time:" + str(request_challenge_issue_blind_signiture_end - request_challenge_issue_blind_signiture_start) + "\n")
-        f.close()
+        # f = open("./log/time.txt", "a")
+        # f.write("request_challenge_issue_blind_signiture_ time:" + str(request_challenge_issue_blind_signiture_end - request_challenge_issue_blind_signiture_start) + "\n")
+        # f.close()
 
         # Handle challenge
         try:
             challenge['timestamp'] = params.get('timestamp')
 
-            ap_challenge_response_start = process_time()
+            # ap_challenge_response_start = process_time()
 
             e = json.dumps(handle_challenge_ap(challenge, params.get('policy'), service_y))
 
-            ap_challenge_response_end = process_time()
+            # ap_challenge_response_end = process_time()
 
-            f = open("./log/time.txt", "a")
-            f.write("ap_challenge_response time:" + str(ap_challenge_response_end - ap_challenge_response_start) + "\n")
+            # f = open("./log/time.txt", "a")
+            # f.write("ap_challenge_response time:" + str(ap_challenge_response_end - ap_challenge_response_start) + "\n")
+            # f.close()
 
-            f.close()
             # Send Response
 
 
-            send_ap_challenge_response_start = process_time()
+            # send_ap_challenge_response_start = process_time()
             
             proof_response = requests.post('http://%s:5000/generate_proof' % ap_host, json=e, headers=headers)
 
-            send_ap_challenge_response_end = process_time()
+            # send_ap_challenge_response_end = process_time()
 
-            f = open("./log/time.txt", "a")
-            f.write("send_ap_challenge_response time:" + str(send_ap_challenge_response_end - send_ap_challenge_response_start) + "\n")
-
-            f.close()
+            # f = open("./log/time.txt", "a")
+            # f.write("send_ap_challenge_response time:" + str(send_ap_challenge_response_end - send_ap_challenge_response_start) + "\n")
+            # f.close()
 
             proofs = proof_response.json()
 
             # Validate Response
             try:
-                validate_proof_start = process_time()
+                # validate_proof_start = process_time()
 
                 validate_proof(proofs)
 
-                validate_proof_end = process_time()
+                # validate_proof_end = process_time()
 
-                f = open("./log/time.txt", "a")
-                f.write("validate_proof time:" + str(validate_proof_end - validate_proof_start) + "\n")
-
-                f.close()
+                # f = open("./log/time.txt", "a")
+                # f.write("validate_proof time:" + str(validate_proof_end - validate_proof_start) + "\n")
+                # f.close()
 
             except Exception as e:
                 flash(str(e), "access_service_error")
@@ -338,20 +349,25 @@ def access_service_post():
             ap_key_model = KeyModel.query.filter_by(p_id_=2000, provider_type_=2).first()
 
             # Build signature
-            build_signature_start = process_time()
+            # build_signature_start = process_time()
 
             blind_signature = ap_key_model.generate_blind_signature(proofs.get('proof'))
 
-            build_signature_end = process_time()
+            # build_signature_end = process_time()
+
+            # f = open("./log/time.txt", "a")
+            # f.write("build_signature_time:" + str(build_signature_end - build_signature_start) + "\n")
+            # f.close()
+
+            generate_signature_end = process_time()
 
             f = open("./log/time.txt", "a")
-
-            f.write("build_signature_time:" + str(build_signature_end - build_signature_start) + "\n")
-
+            f.write("generate signature time:" + str(generate_signature_end - generate_signature_start) + "\n")
             f.close()
 
             # Send signature on service_y to service
 
+            access_to_service_start = process_time()
 
             resp_service = {
                 'y': service_y,
@@ -362,10 +378,7 @@ def access_service_post():
 
 
 
-
             # Get access to service
-
-            access_to_service_start = process_time()
 
             res = requests.post('http://%s:5000/response' % service_host, json=json.dumps(resp_service))
 
