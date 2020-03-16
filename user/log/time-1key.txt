@@ -1,0 +1,14 @@
+setup_keys time:0.004311723000000267
+challenge_response time:0.010639097999999958
+post_to_cp time:0.004019260000000191
+save_hash  time:0.0062387789999998056
+request_certs time:0.0031614920000002655
+validate_block time:0.00018354900000039365
+request_challenge_own_keypair time:0.004002244999999682
+get_challenge_own_keypair time:0.004400752000000008
+request_challenge_issue_blind_signiture_ time:0.004021441999999986
+ap_challenge_response time:0.006347260000000077
+send_ap_challenge_response time:0.014277127000000167
+validate_proof time:0.0002626369999996214
+build_signature_time:0.000962746999999986
+access_to_service_time:0.005317999999999934
