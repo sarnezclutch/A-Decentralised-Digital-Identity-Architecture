@@ -13,6 +13,10 @@ from user.utils.utils import handle_challenge, handle_response_hashes, prove_own
     handle_challenge_ap, validate_proof
 import dateutil.parser
 
+from time import process_time 
+
+
+
 main = Blueprint('main', __name__, template_folder='templates')
 
 dotenv.load_dotenv('../.env')
@@ -71,6 +75,7 @@ def gen_keys(headers):
 @main.route("/generate_keys", methods=['POST'])
 @token_required
 def challenge_response_post(headers):
+
     """
     This method is called by the user frontend when the generate keys form has been filled out. It then initiates the
     blinding process with the CP. It receives the the proof hashes from the CP and saves them in the database.
@@ -84,27 +89,71 @@ def challenge_response_post(headers):
         'policy': int(request.form.get('policy'))
     }
 
+
     """
     The user must initiate the interaction with the CP in order to blind the signatures. It sends a GET request
     to the following endpoint in order to receive (rnd, a, b1, b2) and the CP public key for the corresponding policy
     and time interval.
     """
+    setup_keys_start = process_time()
+
     res = requests.get("http://%s:5000/setup_keys" % cp_host, params=params, headers=headers)
+
+    setup_keys_end = process_time()
+
+    f = open("time.txt", "a")
+    f.write("setup_keys time:" + str(setup_keys_end - setup_keys_start)+ "\n")
+    f.close()
+
+
     if res.status_code == 401:
         return redirect(url_for('auth.login'))
+
     try:
         # Generates the challenge response
+
+        challenge_response_start = process_time()
+
         es = handle_challenge(res.json(), params.get('policy'))
+
+        challenge_response_end = process_time()
+
+        f = open("time.txt", "a")
+        f.write("challenge_response time:" + str(challenge_response_end - challenge_response_start) + "\n")
+
+        f.close()
 
         # Post keys to CP
         try:
+
+            post_to_cp_start = process_time()
+
+
             res = requests.post("http://%s:5000/generate_proofs" % cp_host, json=json.dumps(es), headers=headers)
+
+            post_to_cp_end = process_time()
+            f = open("time.txt", "a")
+            f.write("post_to_cp time:" + str(post_to_cp_end - post_to_cp_start) + "\n")
+            f.close()
+
+
+
             if res.status_code == 201:
                 # TODO remove hardcoded CP
                 data = res.json()
-
                 # The response hashes need to be saved with the corresponding policy at a given timestamp
+                save_hash_start = process_time()
+
                 handle_response_hashes(data, 2000, data.get('policy'))
+
+                save_hash_end = process_time()
+
+                
+                f = open("time.txt", "a")
+                f.write("save_hash  time:" + str(save_hash_end - save_hash_start) + "\n")
+                f.write('okay')
+                f.close()
+
                 flash("Keys have been generated", 'keygen_success')
                 return render_template('generate_keys.html')
             else:

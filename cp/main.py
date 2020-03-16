@@ -9,6 +9,7 @@ from cp.utils.sig_utils import setup_key_handler, gen_proofs_handler
 from cp.utils.ledger_utils import publish_pool
 from cp import create_app
 
+
 main = Blueprint('main', __name__, template_folder='templates')
 
 
