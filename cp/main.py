@@ -9,6 +9,7 @@ from cp.utils.sig_utils import setup_key_handler, gen_proofs_handler
 from cp.utils.ledger_utils import publish_pool
 from cp import create_app
 
+from time import process_time 
 
 main = Blueprint('main', __name__, template_folder='templates')
 
@@ -74,7 +75,17 @@ def publish_policies():  # Test method to publish a pool manually
     policy = int(request.form.get('policy'))
     timestamp = int(dateutil.parser.parse(request.form.get('timestamp')).timestamp())
 
+
+    publish_start = process_time()
+
     if publish_pool(policy, timestamp):
+
+        publish_end = process_time()
+
+        f = open("time.txt", "a")
+        f.write("publish  time:" + str(publish_end - publish_start) + "\n")
+        f.close()
+
         flash("Proofs published", 'pub_policies_success')
         return redirect(url_for('main.publish_policies'))
     else:

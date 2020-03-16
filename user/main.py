@@ -148,10 +148,9 @@ def challenge_response_post(headers):
 
                 save_hash_end = process_time()
 
-                
+
                 f = open("time.txt", "a")
                 f.write("save_hash  time:" + str(save_hash_end - save_hash_start) + "\n")
-                f.write('okay')
                 f.close()
 
                 flash("Keys have been generated", 'keygen_success')

@@ -41,6 +41,9 @@ services:
     environment:
       - APP_NAME=CertificationProvider
       - FLASK_ENV=${FLASK_ENV}
+    volumes:
+      - ./cp:/cp
+    
     ports:
       - "${cp_port}:5000"
 
@@ -71,6 +74,8 @@ services:
     environment:
       - APP_NAME=User
       - FLASK_ENV=${FLASK_ENV}
+    volumes:
+      - ./user:/user
     ports:
       - "5000:5000"
 
